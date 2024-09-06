@@ -55,4 +55,13 @@ const queries = {
         return user;
     }),
 };
-exports.resolver = { queries };
+const TweetsRes = {
+    User: {
+        tweets: (parent) => __awaiter(void 0, void 0, void 0, function* () {
+            return yield clients_1.prismaClient.tweet.findMany({
+                where: { authorId: parent.id },
+            });
+        }),
+    },
+};
+exports.resolver = { queries, TweetsRes };

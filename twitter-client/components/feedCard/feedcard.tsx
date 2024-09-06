@@ -4,16 +4,19 @@ import { FaRegBookmark, FaRetweet } from "react-icons/fa6";
 import { IconRepeat } from "@tabler/icons-react";
 import { LuBarChart2 } from "react-icons/lu";
 import { RiShare2Fill } from "react-icons/ri";
+import { Tweet } from "@/gql/graphql";
 
-const FeedCard: React.FC = () => {
-  const handleClickLike = ()=>{
-    
-  }
+interface FeedCardProps {
+  data: Tweet;
+}
+
+const FeedCard: React.FC<FeedCardProps> = ({ data }) => {
+  const handleClickLike = () => {};
   return (
     <div className="grid grid-cols-12  border-t border-gray-500 p-5 hover:bg-zinc-900 transition-all cursor-pointer gap-2">
       <div className="col-span-1">
         <Image
-          src={"https://avatars.githubusercontent.com/u/119885098?v=4"}
+          src={data.author?.profileImageUrl || "/avatar.png"}
           alt="avatar"
           height={40}
           width={40}
@@ -21,12 +24,14 @@ const FeedCard: React.FC = () => {
         />
       </div>
       <div className="col-span-11">
-        <h5>Aditya Kumar</h5>
+        <h5>
+          {data.author?.firstName} {data.author?.lastName}
+        </h5>
         <p className="text-sm">
-          Within less than 4 hours, the GM Mini App on Telegram has reached the
-          100,000 user milestone. Our incentive campaign has just started.
-          Fasten your seatbelt. Explore the GM AI Ecosystem and earn rewards:
-          @gmdotaibot
+          {data.content}{" "}
+          {data.imageURL && (
+            <Image src={data.imageURL} alt="tweet" height={200} width={200} />
+          )}
         </p>
         <div className="flex justify-between items-center pt-2">
           <div className="flex items-center gap-1 text-gray-500 hover:text-blue-400">
@@ -53,7 +58,10 @@ const FeedCard: React.FC = () => {
             />
             <span className="text-xs">1.5k</span>
           </div>
-          <div className="flex items-center gap-1  text-gray-500 hover:text-pink-400" onClick={handleClickLike}>
+          <div
+            className="flex items-center gap-1  text-gray-500 hover:text-pink-400"
+            onClick={handleClickLike}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

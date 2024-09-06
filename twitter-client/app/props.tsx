@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { FaXTwitter } from "react-icons/fa6";
-import { MdHomeFilled } from "react-icons/md";
+import { MdHomeFilled, MdOutlineGifBox } from "react-icons/md";
 import { BsTwitterX } from "react-icons/bs";
 import { CiCircleMore } from "react-icons/ci";
+import EmojiPicker from "emoji-picker-react";
 import toast from "react-hot-toast";
 import {
   IoMailOutline,
@@ -28,13 +29,22 @@ import { graphqlClient } from "@/client/api";
 import { VerifyGoogleAuthToken } from "@/graphql/query/user";
 import { useCurrectUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query";
-import { IconDots, IconDotsVertical } from "@tabler/icons-react";
+import {
+  IconDots,
+  IconDotsVertical,
+  IconMoodSmile,
+  IconPhoto,
+} from "@tabler/icons-react";
+import { useCreateTweet, useGetAllTweet } from "@/hooks/tweet";
+import { Tweet } from "@/gql/graphql";
 
 export default function Props() {
   const { user } = useCurrectUser();
   const queryClient = useQueryClient();
-
-  console.log(user);
+  const { tweets } = useGetAllTweet();
+  const [content, setContent] = useState("");
+  const [showEmoji, setShowEmoji] = useState(false);
+  const { mutate } = useCreateTweet();
 
   interface TwitterSidebar {
     name: string;
@@ -96,10 +106,26 @@ export default function Props() {
       if (verifyGoogleToken)
         window.localStorage.setItem("token", verifyGoogleToken);
 
-      await queryClient.invalidateQueries(["Login_User"]);
+      await queryClient.invalidateQueries({ queryKey: ["Login_User"] });
     },
     [queryClient]
   );
+
+  const handleImageSelect = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+  };
+
+  const onEmojiClick = (e) => {
+    setContent((prevContent) => prevContent + e.emoji);
+  };
+
+  const handleCreateTweet = useCallback(() => {
+    if (!content || content.trim() === "") return;
+    return mutate({ content }), setContent("");
+  }, []);
   return (
     <div>
       <div className="grid grid-cols-12 h-screen w-screen px-32">
@@ -128,12 +154,25 @@ export default function Props() {
           {user && (
             <div className="flex items-center justify-between hover:bg-zinc-900  rounded-full px-2 py-2 transition-all cursor-pointer m-3">
               <div className="flex items-center gap-2">
-                <Image
-                  src={user?.profileImageUrl}
-                  height={45}
-                  width={45}
-                  className="rounded-full "
-                />
+                {user?.profileImageUrl ? (
+                  <Image
+                    src={user?.profileImageUrl}
+                    height={45}
+                    width={45}
+                    className="rounded-full "
+                    alt="avatar"
+                  />
+                ) : (
+                  <Image
+                    src={
+                      "https://avatars.githubusercontent.com/u/119885098?v=4"
+                    }
+                    height={45}
+                    width={45}
+                    className="rounded-full "
+                    alt="avatar"
+                  />
+                )}
                 <div>
                   <h2 className="text-[0.9rem]">
                     {user?.firstName} {user?.lastName}
@@ -158,11 +197,59 @@ export default function Props() {
             </div>
           </div>
           <div className="overflow-x-scroll h-full">
-            <FeedCard />
-            <FeedCard />
-            <FeedCard />
-            <FeedCard />
-            <FeedCard />
+            <div className="flex p-4 gap-3">
+              <div className="col-span-1">
+                <Image
+                  src={"https://avatars.githubusercontent.com/u/119885098?v=4"}
+                  alt="avatar"
+                  height={40}
+                  width={40}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="col-span-11 w-full ">
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  name="content"
+                  placeholder="what's happening?"
+                  className="w-full bg-transparent text-white dark text-xl border-b border-gray-500"
+                  rows={2}
+                />
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-3 items-center">
+                    <IconPhoto
+                      className="text-[#1987d1] size-7 hover:bg-blue-950 p-1 rounded-full cursor-pointer"
+                      onClick={(e) => handleImageSelect(e)}
+                    />
+                    <MdOutlineGifBox className="text-[#1987d1] size-7 hover:bg-blue-950 p-1 rounded-full cursor-pointer" />
+                    <div className="relative">
+                      <IconMoodSmile
+                        className="text-[#1987d1] size-7 hover:bg-blue-950 p-1 rounded-full cursor-pointer"
+                        onClick={() => setShowEmoji((prv) => !prv)}
+                      />
+                      {showEmoji && (
+                        <div className="absolute z-10 top-8 left-0">
+                          <EmojiPicker onEmojiClick={onEmojiClick} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCreateTweet}
+                    disabled={!content || content.trim() === ""}
+                    className="bg-[#1d9bf0] px-4 py-2 rounded-full disabled:opacity-50"
+                  >
+                    Post
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="mb-12">
+              {tweets?.map((tweet) => (
+                <FeedCard key={tweet?.id} data={tweet as Tweet} />
+              ))}
+            </div>
           </div>
         </div>
         <div className="col-span-3 text-white dark ">

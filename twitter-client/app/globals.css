@@ -25,6 +25,7 @@ body {
     )
     rgb(var(--background-start-rgb));
   overflow: hidden;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 ::-webkit-scrollbar {
   width: 0px;
@@ -34,4 +35,8 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+*:focus {
+  outline: 0;
 }
