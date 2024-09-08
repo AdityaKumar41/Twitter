@@ -8,14 +8,22 @@ import TwitterLayout from "@/components/Layout";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useRouter, useParams } from "next/navigation";
 import { SkeletonCard } from "@/components/Skeleton";
+import Link from "next/link";
+import Posts from "./posts/page";
 
 const queryClient = new QueryClient();
 
-const Page = ({ params }: { params: { slug: string } }) => {
+const Page = ({
+  children,
+  showChildren,
+}: {
+  children: React.ReactNode;
+  showChildren: boolean;
+}) => {
   return (
     <QueryClientProvider client={queryClient}>
       <TwitterLayout>
-        <Profile />
+        <Profile children={children} showChildren={showChildren} />
       </TwitterLayout>
       <ReactQueryDevtools />
     </QueryClientProvider>
@@ -44,7 +52,13 @@ const NotFound = () => {
   );
 };
 
-export const Profile = () => {
+export function Profile({
+  children,
+  showChildren,
+}: {
+  children: React.ReactNode;
+  showChildren: boolean;
+}) {
   const router = useRouter();
   const params = useParams();
   const id = params?.slug;
@@ -69,8 +83,8 @@ export const Profile = () => {
   }
 
   return (
-    <div className="relative">
-      <nav className="flex items-center p-2 gap-4 sticky">
+    <div className="relative overflow-x-scroll h-full">
+      <nav className="flex items-center p-2 gap-4 sticky  z-10 top-0 left-0 right-0 bg-black backdrop-blur-xl bg-white/0">
         <div
           className="text-lg font-semibold hover:bg-zinc-900 p-1.5 rounded-full cursor-pointer"
           onClick={() => router.back()}
@@ -81,7 +95,9 @@ export const Profile = () => {
           <h1 className="font-bold">
             {userById?.firstName} {userById?.lastName}
           </h1>
-          <h2 className="text-gray-500 text-sm">99 posts</h2>
+          <h2 className="text-gray-500 text-sm">
+            {userById?.tweets?.length || "0"} Posts
+          </h2>
         </div>
       </nav>
       <div>
@@ -120,9 +136,32 @@ export const Profile = () => {
             <h3>@{userById?.firstName?.toLowerCase()}</h3>
           </div>
         </div>
+        <div className="py-4">
+          <nav className="flex justify-around items-center text-center border-b border-gray-500">
+            <Link
+              className="hover:bg-zinc-900 p-4 w-full cursor-pointer"
+              href={`/${userById?.id}`}
+            >
+              Post
+            </Link>
+            <Link
+              className="hover:bg-zinc-900 p-4 w-full cursor-pointer"
+              href={`/${userById?.id}/media`}
+            >
+              Media
+            </Link>
+            <Link
+              className="hover:bg-zinc-900 p-4 w-full cursor-pointer"
+              href={`/${userById?.id}/likes`}
+            >
+              Likes
+            </Link>
+          </nav>
+          <div>{showChildren ? children : <Posts data={userById} />}</div>
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default Page;

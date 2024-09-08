@@ -5,6 +5,7 @@ import { IconRepeat } from "@tabler/icons-react";
 import { LuBarChart2 } from "react-icons/lu";
 import { RiShare2Fill } from "react-icons/ri";
 import { Tweet } from "@/gql/graphql";
+import Link from "next/link";
 
 interface FeedCardProps {
   data: Tweet;
@@ -25,7 +26,9 @@ const FeedCard: React.FC<FeedCardProps> = ({ data }) => {
       </div>
       <div className="col-span-11">
         <h5>
-          {data.author?.firstName} {data.author?.lastName}
+          <Link href={`/${data.author?.id}`}>
+            {data.author?.firstName} {data.author?.lastName}
+          </Link>
         </h5>
         <p className="text-sm">
           {data.content}{" "}
