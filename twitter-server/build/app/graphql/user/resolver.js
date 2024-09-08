@@ -54,6 +54,10 @@ const queries = {
         const user = yield clients_1.prismaClient.user.findUnique({ where: { id } });
         return user;
     }),
+    getUserById: (parent_1, _a) => __awaiter(void 0, [parent_1, _a], void 0, function* (parent, { id }) {
+        const user = yield clients_1.prismaClient.user.findUnique({ where: { id } });
+        return user;
+    }),
 };
 const TweetsRes = {
     User: {

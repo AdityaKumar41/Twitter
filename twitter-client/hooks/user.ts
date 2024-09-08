@@ -1,5 +1,8 @@
 import { graphqlClient } from "@/client/api";
-import { GetCurrectLoginUserQuery } from "@/graphql/query/user";
+import {
+  GetCurrectLoginUserQuery,
+  GetUserByIdQuery,
+} from "@/graphql/query/user";
 import { useQuery } from "@tanstack/react-query";
 export const useCurrectUser = () => {
   const query = useQuery({
@@ -8,4 +11,12 @@ export const useCurrectUser = () => {
   });
 
   return { ...query, user: query.data?.getCurrectUser };
+};
+
+export const useGetUserById = (id: string) => {
+  const query = useQuery({
+    queryKey: ["User", id],
+    queryFn: () => graphqlClient.request(GetUserByIdQuery, { id }),
+  });
+  return { ...query, userById: query.data?.getUserById };
 };

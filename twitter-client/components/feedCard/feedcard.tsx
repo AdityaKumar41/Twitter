@@ -30,7 +30,13 @@ const FeedCard: React.FC<FeedCardProps> = ({ data }) => {
         <p className="text-sm">
           {data.content}{" "}
           {data.imageURL && (
-            <Image src={data.imageURL} alt="tweet" height={200} width={200} />
+            <Image
+              src={data.imageURL}
+              alt="tweet"
+              height={200}
+              width={200}
+              className="w-full rounded-xl border my-2"
+            />
           )}
         </p>
         <div className="flex justify-between items-center pt-2">
