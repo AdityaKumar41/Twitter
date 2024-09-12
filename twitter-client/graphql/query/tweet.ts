@@ -16,3 +16,27 @@ export const GetAllTweets = graphql(`
     }
   }
 `);
+
+export const getMediaSignedURL = graphql(`
+  #graphql
+  query GetMediaRes($imageName: String!, $imageType: String!) {
+    getSignedURLTweet(imageName: $imageName, imageType: $imageType)
+  }
+`);
+
+export const getTweetID = graphql(`
+  #graphql
+  query GetTweetById($id: ID!) {
+    getTweetById(id: $id) {
+      id
+      content
+      imageURL
+      author {
+        id
+        profileImageUrl
+        firstName
+        lastName
+      }
+    }
+  }
+`);

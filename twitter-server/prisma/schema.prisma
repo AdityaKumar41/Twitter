@@ -25,6 +25,9 @@ model User {
   Tweet     Tweet[]
 
   @@map("users")
+  // Comment Comment[]
+  // Like Like[]
+  // Repost Repost[]
 }
 
 model Tweet {
@@ -38,4 +41,36 @@ model Tweet {
   updatedAt DateTime @updatedAt
 
   @@map("tweets")
+  // Comment Comment[]
+  // Like Like[]
+  // Repost Repost[]
 }
+
+// model Comment {
+//   id      String  @id @default(uuid())
+//   content String
+//   author  User    @relation(fields: [authorId], references: [id])
+//   authorId String
+//   tweet   Tweet   @relation(fields: [tweetId], references: [id])
+//   tweetId String
+// }
+
+// model Like {
+//   id      String @id @default(uuid())
+//   user    User   @relation(fields: [userId], references: [id])
+//   userId  String
+//   tweet   Tweet  @relation(fields: [tweetId], references: [id])
+//   tweetId String
+
+//   @@map("likes")
+// }
+
+// model Repost {
+//   id      String @id @default(uuid())
+//   user    User   @relation(fields: [userId], references: [id])
+//   userId  String
+//   tweet   Tweet  @relation(fields: [tweetId], references: [id])
+//   tweetId String
+
+//   @@map("reposts")
+// }

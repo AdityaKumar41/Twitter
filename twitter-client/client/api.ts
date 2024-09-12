@@ -2,7 +2,7 @@
 import { GraphQLClient } from "graphql-request";
 
 export const graphqlClient = new GraphQLClient(
-  "http://localhost:4000/graphql",
+  "https://pqm0dv79-4000.inc1.devtunnels.ms/graphql",
   {
     headers: () => {
       const token = localStorage.getItem("token");

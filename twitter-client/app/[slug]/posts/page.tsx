@@ -9,7 +9,7 @@ interface PostsProps {
 const Posts: React.FC<PostsProps> = ({ data }) => {
   return (
     <div className="mb-12">
-      {data?.tweets?.map((tweet: TweetType | null) => (
+      {data?.tweets?.toReversed().map((tweet: TweetType | null) => (
         <FeedCard key={tweet!.id} data={tweet!} />
       ))}
     </div>

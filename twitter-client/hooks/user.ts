@@ -1,4 +1,5 @@
 import { graphqlClient } from "@/client/api";
+import { getTweetID } from "@/graphql/query/tweet";
 import {
   GetCurrectLoginUserQuery,
   GetUserByIdQuery,
@@ -19,4 +20,12 @@ export const useGetUserById = (id: string) => {
     queryFn: () => graphqlClient.request(GetUserByIdQuery, { id }),
   });
   return { ...query, userById: query.data?.getUserById };
+};
+
+export const useGetTweetById = (id: string) => {
+  const query = useQuery({
+    queryKey: ["Tweet", id],
+    queryFn: () => graphqlClient.request(getTweetID, { id }),
+  });
+  return { ...query, data: query.data?.getTweetById };
 };
